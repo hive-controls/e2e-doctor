@@ -45,8 +45,15 @@ steps:
     assert:
       selector: "#note"
       visible: true
-  - id: st_28efd87b
+  - id: st_57cdc71e
     index: 7
+    action: click
+    target: "#approve-button"
+    assert:
+      text: click Approve again to confirm
+      visible: true
+  - id: st_28efd87b
+    index: 8
     action: click
     target: "#approve-button"
     assert:
