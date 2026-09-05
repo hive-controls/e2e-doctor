@@ -1,0 +1,19 @@
+{
+  "name": "e2e-doctor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "E2E tests that record, run, and repair themselves, with visual proof along the way.",
+  "license": "MIT",
+  "repository": "github:hive-controls/e2e-doctor",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "break": "node breakages/apply.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
+  }
+}
