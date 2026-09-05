@@ -80,6 +80,12 @@ document.getElementById("login-form").addEventListener("submit", (event) => {
 });
 
 document.getElementById("approve-button").addEventListener("click", () => {
+  const banner = document.getElementById("confirm-banner");
+  if (banner.hidden) {
+    banner.hidden = false;
+    return;
+  }
+  banner.hidden = true;
   const orderId = document.querySelector(
     '[data-testid="detail-id"]',
   ).textContent;
