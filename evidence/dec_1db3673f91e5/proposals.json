@@ -1,0 +1,37 @@
+{
+  "untestedComponents": [
+    {
+      "role": "button",
+      "name": "SO-4471 Northwind Traders $12,480.00",
+      "firstSeenStepId": "st_6c4760ff",
+      "firstSeenIndex": 4,
+      "suggestedTarget": "role=button[name=\"SO-4471 Northwind Traders $12,480.00\"]",
+      "suggestedAction": "click"
+    },
+    {
+      "role": "button",
+      "name": "SO-4473 Fabrikam Metals $27,310.25",
+      "firstSeenStepId": "st_6c4760ff",
+      "firstSeenIndex": 4,
+      "suggestedTarget": "role=button[name=\"SO-4473 Fabrikam Metals $27,310.25\"]",
+      "suggestedAction": "click"
+    },
+    {
+      "role": "button",
+      "name": "← Back to orders",
+      "firstSeenStepId": "st_3bfe602b",
+      "firstSeenIndex": 5,
+      "suggestedTarget": "role=button[name=\"← Back to orders\"]",
+      "suggestedAction": "click"
+    },
+    {
+      "role": "button",
+      "name": "Approve another",
+      "firstSeenStepId": "st_28efd87b",
+      "firstSeenIndex": 8,
+      "suggestedTarget": "role=button[name=\"Approve another\"]",
+      "suggestedAction": "click"
+    }
+  ],
+  "uiDrift": null
+}
