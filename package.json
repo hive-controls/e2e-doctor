@@ -1,19 +1,71 @@
 {
   "name": "e2e-doctor",
   "version": "0.1.0",
-  "private": true,
-  "description": "E2E tests that record, run, and repair themselves, with visual proof along the way.",
+  "description": "Self-healing end-to-end tests: capture, compile, replay, heal, and produce visual evidence. Formic (@hive-controls/formic) is an optional enabler, never a dependency.",
   "license": "MIT",
-  "repository": "github:hive-controls/e2e-doctor",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hive-controls/e2e-doctor.git"
+  },
+  "homepage": "https://github.com/hive-controls/e2e-doctor#readme",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "engines": {
     "node": ">=20"
   },
+  "exports": {
+    "./spec": "./dist/spec/index.mjs",
+    "./capture": "./dist/capture/index.mjs",
+    "./driver": "./dist/driver/index.mjs",
+    "./evidence": "./dist/evidence/index.mjs",
+    "./replay": "./dist/replay/index.mjs",
+    "./export": "./dist/export/index.mjs",
+    "./author": "./dist/author/index.mjs",
+    "./heal": "./dist/heal/index.mjs",
+    "./host": "./dist/host/host.mjs",
+    "./gate": "./dist/gate.mjs",
+    "./env": "./dist/env.mjs",
+    "./status": "./dist/status/stream.mjs",
+    "./playwright": "./dist/playwright/index.mjs",
+    "./playwright/reporter": "./dist/playwright/reporter.mjs",
+    "./cli/prompts": "./dist/cli/prompts.mjs"
+  },
+  "bin": {
+    "e2e-doctor": "dist/cli/e2e-doctor.mjs",
+    "e2edoctor": "dist/cli/e2e-doctor.mjs"
+  },
+  "files": [
+    "dist",
+    "src",
+    "fixtures",
+    "tsconfig.build.json",
+    "e2e-doctor.toolspec.yaml"
+  ],
   "scripts": {
-    "test": "playwright test",
-    "break": "node breakages/apply.mjs"
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build",
+    "prepare": "npm run build",
+    "test": "node --import tsx --test --test-timeout=600000 \"src/**/*.test.mts\"",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@rrweb/record": "2.1.1",
+    "@solarisdk/browser": "^0.1.2",
+    "@solarisdk/sandbox": "^0.1.2",
+    "dotenv": "^17.4.2",
+    "playwright-core": "^1.62.1",
+    "rrweb-player": "2.1.1",
+    "yaml": "^2.9.0",
+    "@playwright/test": "^1.62.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.1"
+    "@types/node": "^26.4.0",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2",
+    "eslint": "^10.9.1"
   }
 }

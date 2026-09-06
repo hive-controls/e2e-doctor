@@ -1,0 +1,90 @@
+toolspec: 1
+name: e2e-doctor
+title: E2E Doctor
+description: Replay a captured browser spec, or heal it against a live app.
+launch:
+  command: node
+  args:
+    [
+      "--import",
+      "tsx",
+      "src/cli/e2e-doctor.mts",
+      "heal",
+      "{spec}",
+    ]
+  cwd: "{repo}"
+config:
+  files: [".env"]
+health:
+  check:
+    [
+      "node",
+      "--import",
+      "tsx",
+      "--check",
+      "src/cli/e2e-doctor.mts",
+    ]
+status:
+  kind: ndjson
+  events: [started, progress, ok, failed, needs-human]
+pane:
+  prefer: window
+  interactive: false
+env:
+  - name: E2E_DOCTOR_GATE
+    description: "Which gate backend replays run through: solari (a recorded Solari cloud-browser session) or local (headless Chromium). Auto-selects solari when SOLARI_API_KEY resolves, else local; a typo is refused, never silently local."
+  - name: E2E_DOCTOR_HOST
+    description: "Where the app under test is served from for --app. Unset, follows the gate: solari-sandbox on Outside, local on Inside; a typo is refused."
+  - name: E2E_DOCTOR_CDP_URL
+    description: "Endpoint of a browser someone else is running, used by the cdp gate: a raw DevTools ws:// URL, or a hosted Playwright-server wss:// URL (what a cloud grid gives you)."
+  - name: E2E_DOCTOR_CDP_HEADERS
+    description: "JSON object of extra headers sent when connecting to E2E_DOCTOR_CDP_URL, for an endpoint that authenticates by header."
+    secret: true
+  - name: E2E_DOCTOR_CDP_MODE
+    description: "cdp | playwright — which handshake E2E_DOCTOR_CDP_URL speaks. Unset, it follows the URL scheme: ws/http is a raw DevTools endpoint, wss/https a hosted Playwright server."
+  - name: SELENIUM_REMOTE_URL
+    description: "Playwright's own Selenium Grid hub URL. When set, a local-gate launch is routed through that grid instead of this machine's browser (Playwright reads it directly; unverified against a live grid here)."
+  - name: SELENIUM_REMOTE_CAPABILITIES
+    description: "JSON capabilities Playwright sends with SELENIUM_REMOTE_URL; a grid vendor's credentials usually live inside it."
+    secret: true
+  - name: E2E_DOCTOR_HEADED
+    description: "1 = run the browser headed instead of headless."
+  - name: E2E_DOCTOR_HEALER
+    description: "openai-compatible (default) | agent:claude | agent:custom — which healer backend answers a repair request. Other agent CLIs (codex, kimi, grok) are not built in here: run them via agent:custom + E2E_DOCTOR_HEALER_AGENT_CMD, or through a Formic profile."
+    default: openai-compatible
+  - name: E2E_DOCTOR_HEALER_BASE_URL
+    description: "OpenAI-compatible base for the healer request — OpenRouter, OpenAI, Ollama/LM Studio/llama.cpp/vLLM, or Anthropic's compatible endpoint."
+    default: "https://api.anthropic.com/v1"
+  - name: E2E_DOCTOR_HEALER_MODEL
+    description: "Model name passed to the healer's OpenAI-compatible endpoint."
+    default: claude-sonnet-5
+  - name: E2E_DOCTOR_HEALER_API_KEY
+    description: "Bearer for the healer's OpenAI-compatible endpoint; optional for local servers."
+    secret: true
+  - name: E2E_DOCTOR_HEALER_AGENT_CMD
+    description: 'Command template for agent:custom, e.g. "mycli --headless {prompt}".'
+  - name: E2E_DOCTOR_HEALER_TIMEOUT_MS
+    description: "Per-proposal timeout for the healer request, in milliseconds."
+    default: "180000"
+  - name: E2E_DOCTOR_HEALER_MAX_ATTEMPTS
+    description: "How many heal attempts the loop makes before giving up."
+    default: "2"
+  - name: E2E_DOCTOR_HEAL_WORKSPACES
+    description: "Root directory the agent-cli healer's sandboxed heal workspaces are kept under, as audit material."
+  - name: E2E_DOCTOR_EVIDENCE_DIR
+    description: "Where heal --pr commits the evidence bundle, repo-relative. Unset, it is derived from the spec."
+  - name: SOLARI_API_KEY
+    description: "Bearer for the Solari cloud-browser API (console.getsolari.com); needed by the solari gate and the solari-sandbox host."
+    secret: true
+  - name: SOLARI_BASE_URL
+    description: "Override for the Solari API base URL."
+    default: "https://api.getsolari.com"
+  - name: HIVEDECK_STATUS_FILE
+    description: "File-only NDJSON status side channel a launcher sets per run; unset, no status events are emitted anywhere."
+outputs:
+  evidenceDir: E2E_DOCTOR_EVIDENCE_DIR
+exit:
+  "0": "passed (no repair needed) or healed (repair verified by a green replay)"
+  "1": "needs-human (an assertion proposal awaits review) or unhealed"
+  "2": "the harness could not start, the healer failed, or evidence could not be written"
+  "3": "preview-unavailable (the app host stopped serving before healing) — an environment fault, not a heal verdict"
