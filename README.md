@@ -1,5 +1,8 @@
 # e2e-doctor
 
+> **Retired.** E2E Doctor now ships as a tool of https://github.com/hive-controls/devloop-toolkit,
+> launched by Formic. This repository and the `e2e-doctor` npm package are retired.
+
 Self-healing end-to-end tests: **capture → compile → replay → heal → evidence**.
 
 - **capture** — record a browser flow (a human demonstration, or an agent's) with
